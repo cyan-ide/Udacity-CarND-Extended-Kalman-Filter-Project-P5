@@ -1,5 +1,63 @@
 # Extended Kalman Filter Project Starter Code
-Self-Driving Car Engineer Nanodegree Program
+
+## Udacity Project 5 Writeup
+
+---
+
+**Extended Kalman Filter Project**
+
+The goals / steps of this project are the following:
+* Using pre-made code templates fill out missing parts to implement Extended Kalaman Filter
+* Assure the implementation is working with Dataset 1 (and optionally Dataset 2) and properly communicating with the simulator
+* Obtained RMSE should not be higher than [0.11,0.11, 0.55,0.55]
+
+---
+
+By large this project was about re-using earlier in-class code and sticking it together. So the main effort was in debuging and making small modification (like zero-value checks/ small value checks) that tilted RMSE towards required value (as the Kalaman filter turns out to be very sensitive to any miscalculations).
+
+**Summary:** The final code gives **RMSE of [0.09,0.08, 0.45, 0.44] for the first Dataset**; and **RMSE of [0.07,0.09,0.42,0.49] for the second dataset**. All were compiled and tested on MacOS (incl. simiulator running locally).
+
+[//]: # (Image References)
+
+[image_1]: ./examples/project5_results.jpg "Project final results"
+
+---
+
+**Key files:**
+* src/FusionEKF.cpp, kalman_filter.cpp, tools.cpp  - three files that had missing code to implement (in order: dispatch of measurements to Kalman filter; Kalman filter implementation; RMSE and Jacobian matrix calculation)
+* README.md - (this file) - writeup on project coding, challenges and possible improvements. Also, original project description from Udacity.
+
+Additional files:
+* install-\*.sh - installation scripts for web sockets library for C (used to communicate between Kalman fitler logic and simulator used to visualise/test)
+* data/ - source data for the project
+* Docs/ - additional info how the source ata is generated
+* ide_profiles/ - profiles for importing src into popoular IDEs
+* examples/ - images with results used in this writeup
+
+Additional resources:
+* Udacity simulator - complimentary to this project, necessary to test it - https://github.com/udacity/self-driving-car-sim/releases
+* Mercedes Utilities - utilites coded for data generation and analysis related to this project assignement -  https://github.com/udacity/CarND-Mercedes-SF-Utilities
+
+---
+
+## Implementation Notes and Challenges enountered:
+- the first issues I had were with making everything run correctly. The project instructions are scattered around several class pages and the Readme file, therefore its easy to ommit something. In my case, I didn't notice the comment about tools.cpp and it took me some debuging to figure out that simulator is not working due to server crash happing because tools.cpp function does not return any values. 
+- secondly, not as critical tho, the simulator has a well described but also unncessary problem of making the log file to blow out of proportions when server is down. It doesn't cause anything to crash but can take up hard drive space quite quick.
+- after I was sure the similuar is running, I started implementing roughtly in order the Udacity project description recommends - started with init focusing on x and P initlisation, afterwards Kalman filter functions and finally the tools functions (with the exception that I had the rmse calculation up-front).
+- most of the code is simply copy-paste. Just have to know what to put where. Majority of my issues were due to 'bugs'. I felt this project is mostly a coding task to familiarise with Kalaman filter topic, it doesn't push to do as many experiments and hypotesis testing as the previous projects.
+
+## Coding progress report:
+- My first attempt when everything was implemented, compiling and running in simulator gave RMSE = [3.1, 6.2 ,1.1 , 0.9]. Not bad for start but quite a bit away from the target.
+- Second attempt of fixing this and playing with precision of variables blew up the error to 100s. Ops, not a good direciton.
+- Third attept, going line by line, I discovered I forgot to set current timestemp as previous at the end of initalisation. As a result when second mesurement come it didn't the past time data. When I fixed that was done suddently everything improved, my RMSE was now: [0.12, 0.26, 0.52, 0.65].
+- Fourth, final, attempt. I discovered that my Jacobbian matrix had a bug. Even tho it passed in-class exercise, there was a bug of how I was using 'pow' function with 3/2 exponent. After fixing that the RMSE was: [0.09,0.08, 0.45, 0.44]
+- At the end I also tested with Dataset 2. The RMSE for that one was: [0.07,0.09,0.42,0.49]. Also meeting Project objectives.
+
+
+![alt text][image_1]
+
+---
+## Project Instructions / Description
 
 In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
 
